@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>File Compressor</title>
+    <meta charset="UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+        }
+        form {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #errorMessage {
+            color: red;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Compressor & Decompressor</h1>
+
+    <div id="errorMessage" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/compression/compress}" method="post" enctype="multipart/form-data">
+        <h2>Compress File</h2>
+        <input type="file" name="file" required />
+        <br/>
+        <button type="submit">Compress & Download</button>
+    </form>
+
+    <form th:action="@{/compression/decompress}" method="post" enctype="multipart/form-data">
+        <h2>Decompress File</h2>
+        <input type="file" name="file" required />
+        <br/>
+        <button type="submit">Decompress & Download</button>
+    </form>
+
+    <div th:if="${originalSize != null}">
+        <h3>Compression Stats</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Original Size (bytes)</th>
+                    <th>Compressed Size (bytes)</th>
+                    <th>Compression %</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td th:text="${originalSize}"></td>
+                    <td th:text="${compressedSize}"></td>
+                    <td th:text="${compressionPercent}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Hidden download link to trigger automatic download -->
+        <a id="downloadLink" th:href="@{/compression/download(file=${compressedFileName})}" style="display:none;">Download Compressed File</a>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const downloadLink = document.getElementById('downloadLink');
+            if (downloadLink) {
+                downloadLink.click();  // trigger file download automatically
+            }
+        };
+    </script>
+</body>
+</html>
